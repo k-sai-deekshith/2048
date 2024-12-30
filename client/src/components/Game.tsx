@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGame } from "@/hooks/useGame";
 import { useAudio } from "@/hooks/useAudio";
 import { Grid } from "./Grid";
 import { Tutorial } from "./Tutorial";
 import { Button } from "@/components/ui/button";
+import ReactConfetti from "react-confetti";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +26,15 @@ export function Game() {
     resetGame,
   } = useGame();
 
+  const [showConfetti, setShowConfetti] = useState(false);
   const audio = useAudio();
+
+  useEffect(() => {
+    if (score > bestScore && bestScore !== 0) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000); // Hide confetti after 5 seconds
+    }
+  }, [score, bestScore]);
 
   useEffect(() => {
     const handleKeyDownWithSound = (event: KeyboardEvent) => {
@@ -35,7 +44,6 @@ export function Game() {
 
       if (prevGrid !== newGrid) {
         audio.playMoveSound();
-        // Check if any tiles merged by comparing the number of non-null tiles
         const prevTiles = grid.flat().filter(Boolean).length;
         const newTiles = JSON.parse(newGrid).flat().filter(Boolean).length;
         if (prevTiles > newTiles) {
@@ -65,6 +73,15 @@ export function Game() {
 
   return (
     <div className="flex flex-col items-center gap-6 max-w-md w-full">
+      {showConfetti && (
+        <ReactConfetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+          numberOfPieces={200}
+        />
+      )}
+
       <div className="w-full flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
