@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useGame } from "@/hooks/useGame";
+import { useAudio } from "@/hooks/useAudio";
 import { Grid } from "./Grid";
+import { AudioControls } from "./AudioControls";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,10 +25,43 @@ export function Game() {
     resetGame,
   } = useGame();
 
+  const audio = useAudio();
+
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
+    const handleKeyDownWithSound = (event: KeyboardEvent) => {
+      const prevGrid = JSON.stringify(grid);
+      handleKeyDown(event);
+      const newGrid = JSON.stringify(grid);
+
+      if (prevGrid !== newGrid) {
+        audio.playMoveSound();
+        // Check if any tiles merged by comparing the number of non-null tiles
+        const prevTiles = grid.flat().filter(Boolean).length;
+        const newTiles = JSON.parse(newGrid).flat().filter(Boolean).length;
+        if (prevTiles > newTiles) {
+          audio.playMergeSound();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDownWithSound);
+    return () => window.removeEventListener("keydown", handleKeyDownWithSound);
+  }, [handleKeyDown, grid, audio]);
+
+  const handleSwipeWithSound = (direction: "up" | "down" | "left" | "right") => {
+    const prevGrid = JSON.stringify(grid);
+    handleSwipe(direction);
+    const newGrid = JSON.stringify(grid);
+
+    if (prevGrid !== newGrid) {
+      audio.playMoveSound();
+      const prevTiles = grid.flat().filter(Boolean).length;
+      const newTiles = JSON.parse(newGrid).flat().filter(Boolean).length;
+      if (prevTiles > newTiles) {
+        audio.playMergeSound();
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 max-w-md w-full">
@@ -39,9 +74,12 @@ export function Game() {
             Join the tiles, get to 2048!
           </p>
         </div>
-        <Button variant="outline" size="icon" onClick={resetGame}>
-          <RotateCcw className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <AudioControls {...audio} />
+          <Button variant="outline" size="icon" onClick={resetGame}>
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       <div className="flex gap-4 w-full">
@@ -55,7 +93,7 @@ export function Game() {
         </div>
       </div>
 
-      <Grid grid={grid} onSwipe={handleSwipe} />
+      <Grid grid={grid} onSwipe={handleSwipeWithSound} />
 
       <Dialog open={isGameOver || hasWon} onOpenChange={() => {}}>
         <DialogContent>
