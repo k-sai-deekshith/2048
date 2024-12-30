@@ -30,10 +30,10 @@ export function Grid({ grid, onSwipe }: GridProps) {
     <div
       ref={containerRef}
       {...bind()}
-      className="bg-muted rounded-xl p-3 w-full max-w-md mx-auto touch-none"
-      style={{ aspectRatio: "1/1" }}
+      className="bg-muted rounded-xl p-4 w-full touch-none"
+      style={{ width: "480px", height: "480px" }}
     >
-      <div className="grid grid-cols-4 gap-3 h-full">
+      <div className="grid grid-cols-4 gap-4 h-full">
         {grid.map((row, i) =>
           row.map((value, j) => (
             <Tile key={`${i}-${j}`} value={value} />

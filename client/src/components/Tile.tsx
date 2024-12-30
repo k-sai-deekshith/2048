@@ -22,12 +22,12 @@ export function Tile({ value }: TileProps) {
   return (
     <div
       className={cn(
-        "rounded-lg flex items-center justify-center w-full h-full transition-all duration-100",
+        "rounded-lg flex items-center justify-center transition-all duration-100",
         value ? colors[value] || "bg-[#3c3a32] text-white" : "bg-muted-foreground/20",
-        "text-2xl font-bold"
+        "font-bold w-[100px] h-[100px]"
       )}
       style={{
-        fontSize: value && value >= 100 ? (value >= 1000 ? '1.25rem' : '1.5rem') : '2rem'
+        fontSize: value && value >= 100 ? (value >= 1000 ? '28px' : '32px') : '36px'
       }}
     >
       {value}
