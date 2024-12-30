@@ -1,10 +1,12 @@
+import { useState } from "react";
+
 export function createEmptyGrid(): (number | null)[][] {
   return Array(4).fill(null).map(() => Array(4).fill(null));
 }
 
 export function addRandomTile(grid: (number | null)[][]): (number | null)[][] {
   const emptyCells: [number, number][] = [];
-  
+
   grid.forEach((row, i) => {
     row.forEach((cell, j) => {
       if (cell === null) {
@@ -53,7 +55,7 @@ export function move(
   for (let i = 0; i < 4; i++) {
     const row = newGrid[i].filter(cell => cell !== null);
     const merged: (number | null)[] = [];
-    
+
     for (let j = 0; j < row.length; j++) {
       if (j < row.length - 1 && row[j] === row[j + 1]) {
         const mergedValue = (row[j] as number) * 2;
@@ -64,7 +66,7 @@ export function move(
         merged.push(row[j]);
       }
     }
-    
+
     while (merged.length < 4) {
       merged.push(null);
     }
@@ -109,4 +111,41 @@ export function isGameOver(grid: (number | null)[][]): boolean {
 
 export function hasWon(grid: (number | null)[][]): boolean {
   return grid.some(row => row.some(cell => cell === 2048));
+}
+
+// Deterministic random number generator
+function seededRandom(seed: number) {
+  const x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
+export function createDailyChallenge(): (number | null)[][] {
+  // Use the current date as seed
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  let seedCounter = seed;
+
+  const grid = createEmptyGrid();
+
+  // Place initial tiles deterministically
+  const initialTilesCount = Math.floor(seededRandom(seedCounter++) * 2) + 4; // 4-5 initial tiles
+
+  for (let i = 0; i < initialTilesCount; i++) {
+    const emptyCells: [number, number][] = [];
+    grid.forEach((row, i) => {
+      row.forEach((cell, j) => {
+        if (cell === null) {
+          emptyCells.push([i, j]);
+        }
+      });
+    });
+
+    if (emptyCells.length === 0) break;
+
+    const cellIndex = Math.floor(seededRandom(seedCounter++) * emptyCells.length);
+    const [row, col] = emptyCells[cellIndex];
+    grid[row][col] = seededRandom(seedCounter++) < 0.9 ? 2 : 4;
+  }
+
+  return grid;
 }

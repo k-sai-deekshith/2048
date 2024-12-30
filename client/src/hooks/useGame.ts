@@ -5,10 +5,14 @@ import {
   move,
   isGameOver as checkGameOver,
   hasWon as checkWin,
+  createDailyChallenge,
 } from "@/lib/gameLogic";
 
-export function useGame() {
+export function useGame(isDailyChallenge = false) {
   const [grid, setGrid] = useState(() => {
+    if (isDailyChallenge) {
+      return createDailyChallenge();
+    }
     const emptyGrid = createEmptyGrid();
     return addRandomTile(addRandomTile(emptyGrid));
   });
@@ -80,12 +84,12 @@ export function useGame() {
   );
 
   const resetGame = useCallback(() => {
-    const emptyGrid = createEmptyGrid();
-    setGrid(addRandomTile(addRandomTile(emptyGrid)));
+    const emptyGrid = isDailyChallenge ? createDailyChallenge() : createEmptyGrid();
+    setGrid(isDailyChallenge ? emptyGrid : addRandomTile(addRandomTile(emptyGrid)));
     setScore(0);
     setGameOver(false);
     setHasWon(false);
-  }, []);
+  }, [isDailyChallenge]);
 
   return {
     grid,
