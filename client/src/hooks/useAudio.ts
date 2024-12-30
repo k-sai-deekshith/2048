@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface AudioState {
   isMusicEnabled: boolean;
@@ -18,41 +18,49 @@ export function useAudio() {
     };
   });
 
-  const moveSound = new Audio("/sounds/move.mp3");
-  const mergeSound = new Audio("/sounds/merge.mp3");
-  const bgMusic = new Audio("/sounds/background.mp3");
-  bgMusic.loop = true;
+  // Use refs to persist audio instances
+  const moveSound = useRef(new Audio("/sounds/move.mp3"));
+  const mergeSound = useRef(new Audio("/sounds/merge.mp3"));
+  const bgMusic = useRef(new Audio("/sounds/background.mp3"));
+
+  // Configure background music
+  useEffect(() => {
+    bgMusic.current.loop = true;
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(audioState));
-    
+
     // Update volume for all sounds
-    [moveSound, mergeSound, bgMusic].forEach(sound => {
+    [moveSound.current, mergeSound.current, bgMusic.current].forEach(sound => {
       sound.volume = audioState.volume;
     });
 
     // Handle background music
     if (audioState.isMusicEnabled) {
-      bgMusic.play().catch(() => {
-        // Autoplay might be blocked, we'll need user interaction
-        setAudioState(prev => ({ ...prev, isMusicEnabled: false }));
-      });
+      const playPromise = bgMusic.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay might be blocked, we'll need user interaction
+          setAudioState(prev => ({ ...prev, isMusicEnabled: false }));
+        });
+      }
     } else {
-      bgMusic.pause();
+      bgMusic.current.pause();
     }
   }, [audioState]);
 
   const playMoveSound = useCallback(() => {
     if (audioState.isSoundEnabled) {
-      moveSound.currentTime = 0;
-      moveSound.play().catch(() => {});
+      moveSound.current.currentTime = 0;
+      moveSound.current.play().catch(() => {});
     }
   }, [audioState.isSoundEnabled]);
 
   const playMergeSound = useCallback(() => {
     if (audioState.isSoundEnabled) {
-      mergeSound.currentTime = 0;
-      mergeSound.play().catch(() => {});
+      mergeSound.current.currentTime = 0;
+      mergeSound.current.play().catch(() => {});
     }
   }, [audioState.isSoundEnabled]);
 
@@ -66,6 +74,16 @@ export function useAudio() {
 
   const setVolume = useCallback((volume: number) => {
     setAudioState(prev => ({ ...prev, volume }));
+  }, []);
+
+  // Cleanup audio instances on unmount
+  useEffect(() => {
+    return () => {
+      bgMusic.current.pause();
+      bgMusic.current.src = '';
+      moveSound.current.src = '';
+      mergeSound.current.src = '';
+    };
   }, []);
 
   return {
