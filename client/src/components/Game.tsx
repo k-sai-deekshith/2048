@@ -4,7 +4,6 @@ import { useAudio } from "@/hooks/useAudio";
 import { Grid } from "./Grid";
 import { AudioControls } from "./AudioControls";
 import { Tutorial } from "./Tutorial";
-import { DailyChallenge } from "./DailyChallenge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -79,7 +78,6 @@ export function Game() {
         <div className="flex items-center gap-2">
           <AudioControls {...audio} />
           <Tutorial onClose={() => {}} />
-          <DailyChallenge />
           <Button variant="outline" size="icon" onClick={resetGame}>
             <RotateCcw className="h-4 w-4" />
           </Button>
