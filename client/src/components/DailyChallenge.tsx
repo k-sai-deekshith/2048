@@ -32,7 +32,6 @@ export function DailyChallenge() {
     isGameOver,
     hasWon,
     resetGame,
-    initializeDailyChallenge,
   } = useGame(true); // true indicates daily challenge mode
 
   useEffect(() => {
