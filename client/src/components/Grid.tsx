@@ -30,7 +30,8 @@ export function Grid({ grid, onSwipe }: GridProps) {
     <div
       ref={containerRef}
       {...bind()}
-      className="bg-muted rounded-xl p-3 aspect-square w-full touch-none"
+      className="bg-muted rounded-xl p-3 w-full max-w-md mx-auto touch-none"
+      style={{ aspectRatio: "1/1" }}
     >
       <div className="grid grid-cols-4 gap-3 h-full">
         {grid.map((row, i) =>
