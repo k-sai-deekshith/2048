@@ -1,0 +1,69 @@
+Develop a responsive and fully functional 2048 game as a web application using Angular for the framework, TailwindCSS for styling, and MaterialUI for additional UI components. The application should include the following features and adhere to the detailed instructions below:
+
+Game Description:
+2048 is a single-player sliding tile puzzle game played on a 4×4 grid.
+Players can swipe tiles in four directions (up, down, left, right) to combine numbers.
+When two tiles with the same value collide, they merge into a new tile with a value equal to their sum.
+The objective is to reach the tile with the value 2048.
+If no moves are possible, the game ends.
+Instructions:
+Framework and Libraries:
+
+Use Angular (latest version) to manage the application structure and logic.
+Use TailwindCSS for designing the layout and grid styling.
+Integrate MaterialUI components where needed (e.g., for dialog boxes, buttons, or score display).
+User Interface:
+
+Design a responsive 4×4 grid for the game board using TailwindCSS.
+Each tile should display a number and have a unique background color corresponding to its value.
+Use MaterialUI to create a header that displays the current score, best score, and restart button.
+Ensure the game UI is responsive and works seamlessly on mobile and desktop browsers.
+Game Mechanics:
+
+Implement swipe functionality for desktop (using arrow keys) and mobile (using touch gestures).
+Write the logic to merge tiles with the same value, ensuring tiles merge only once per move.
+Spawn a new tile (with a value of 2 or 4) in a random empty cell after every move.
+Detect and handle game-over conditions when no moves are possible.
+Animations:
+
+Add smooth animations for tile movements and merges.
+Use Angular's animation library or CSS transitions for creating these effects.
+Include fade-in or scaling animations when new tiles appear.
+Scoring:
+
+Track the score and increment it by the sum of merged tiles in each move.
+Maintain and display the best score (stored locally in the browser).
+Optional Features:
+
+Implement an undo feature to allow users to revert their last move.
+Add a restart button to reset the game.
+Include a pause button that displays a modal with game instructions.
+Code Structure:
+
+Organize the code using Angular's modular structure (e.g., create components for the grid, tile, and score tracker).
+Use services for managing game logic and state.
+Write reusable and maintainable code with appropriate comments and documentation.
+Styling:
+
+Use TailwindCSS for a modern, clean design.
+Style the tiles with dynamic background colors and font sizes that adjust based on their values.
+Ensure the grid layout is visually appealing and adaptive to different screen sizes.
+MaterialUI Integration:
+
+Use MaterialUI dialogs for the game-over and pause modals.
+Use MaterialUI buttons for actions like restart and undo.
+Testing and Deployment:
+
+Test the game on various browsers (Chrome, Firefox, Edge, Safari) and devices (desktop and mobile).
+Optimize performance for smooth gameplay.
+Deploy the application to a web hosting service (e.g., Vercel, Netlify, or Firebase Hosting).
+Output:
+Provide the following:
+
+A GitHub repository containing the full project code.
+A README file with instructions on how to install dependencies, run the application locally, and deploy it.
+Documentation of key components and services, including the logic for game mechanics.
+Additional Requirements:
+The application should support progressive web app (PWA) features for offline play.
+Follow best practices for Angular development, including linting and formatting.
+Use semantic HTML and accessible ARIA attributes to ensure accessibility.
