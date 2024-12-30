@@ -106,4 +106,3 @@ Inspired by the original 2048 game concept created by [Gabriele Cirulli](https:/
 For inquiries, feel free to reach out via email or GitHub. 
 
 Happy gaming!
-```
