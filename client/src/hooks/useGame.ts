@@ -3,7 +3,7 @@ import {
   createEmptyGrid,
   addRandomTile,
   move,
-  isGameOver,
+  isGameOver as checkGameOver,
   hasWon as checkWin,
 } from "@/lib/gameLogic";
 
@@ -19,7 +19,7 @@ export function useGame() {
     return saved ? parseInt(saved, 10) : 0;
   });
 
-  const [isGameOver, setIsGameOver] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
   const [hasWon, setHasWon] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export function useGame() {
   }, [score, bestScore]);
 
   const makeMove = useCallback((direction: "up" | "down" | "left" | "right") => {
-    if (isGameOver || hasWon) return;
+    if (gameOver || hasWon) return;
 
     const { grid: newGrid, score: moveScore } = move(grid, direction);
     const gridWithNewTile = addRandomTile(newGrid);
@@ -40,14 +40,14 @@ export function useGame() {
 
     if (checkWin(gridWithNewTile)) {
       setHasWon(true);
-    } else if (isGameOver(gridWithNewTile)) {
-      setIsGameOver(true);
+    } else if (checkGameOver(gridWithNewTile)) {
+      setGameOver(true);
     }
-  }, [grid, isGameOver, hasWon]);
+  }, [grid, gameOver, hasWon]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (isGameOver || hasWon) return;
+      if (gameOver || hasWon) return;
 
       switch (event.key) {
         case "ArrowUp":
@@ -68,22 +68,22 @@ export function useGame() {
           break;
       }
     },
-    [makeMove, isGameOver, hasWon]
+    [makeMove, gameOver, hasWon]
   );
 
   const handleSwipe = useCallback(
     (direction: "up" | "down" | "left" | "right") => {
-      if (isGameOver || hasWon) return;
+      if (gameOver || hasWon) return;
       makeMove(direction);
     },
-    [makeMove, isGameOver, hasWon]
+    [makeMove, gameOver, hasWon]
   );
 
   const resetGame = useCallback(() => {
     const emptyGrid = createEmptyGrid();
     setGrid(addRandomTile(addRandomTile(emptyGrid)));
     setScore(0);
-    setIsGameOver(false);
+    setGameOver(false);
     setHasWon(false);
   }, []);
 
@@ -91,7 +91,7 @@ export function useGame() {
     grid,
     score,
     bestScore,
-    isGameOver,
+    isGameOver: gameOver,
     hasWon,
     handleKeyDown,
     handleSwipe,
